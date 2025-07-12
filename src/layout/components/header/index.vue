@@ -8,7 +8,7 @@
 
       <!-- 右侧操作 -->
       <template #operations>
-        <t-space :size="1">
+        <t-space :size="8">
           <!-- 通知信息 -->
           <t-badge :count="5" :offset="[9, 6]" size="small">
             <t-button variant="text" shape="square">
@@ -63,7 +63,7 @@
 
 <script setup>
 import LogoImage from '@/assets/images/logo.png'
-import { onBeforeUnmount, onMounted, ref, toRaw, toRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { DialogPlugin } from 'tdesign-vue-next'
 import screenfull from 'screenfull'
 import { useAuthStore } from '@/store'

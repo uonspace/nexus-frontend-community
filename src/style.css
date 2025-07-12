@@ -27,3 +27,10 @@
 .font-douyu {
   font-family: 'douyu';
 }
+
+/* TDesign表格头样式修改 */
+.t-table__header > tr > th {
+  background-color: #fafafa;
+  color: black;
+  font-weight: bold;
+}

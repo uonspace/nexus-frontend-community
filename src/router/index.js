@@ -80,18 +80,18 @@ const asyncRoutes = [
         component: () => import('@/pages/system/user/index.vue'),
         meta: { title: '用户管理', icon: 'letters-u', hidden: false },
       },
-      // {
-      //   path: 'role',
-      //   name: 'Role',
-      //   component: () => import('@/pages/system/role/index.vue'),
-      //   meta: { title: '角色管理', icon: 'letters-r', hidden: false },
-      // },
-      // {
-      //   path: 'menu',
-      //   name: 'Menu',
-      //   component: () => import('@/pages/system/menu/index.vue'),
-      //   meta: { title: '菜单管理', icon: 'letters-c', hidden: false },
-      // },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/pages/system/role/index.vue'),
+        meta: { title: '角色管理', icon: 'letters-r', hidden: false },
+      },
+      {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('@/pages/system/menu/index.vue'),
+        meta: { title: '菜单管理', icon: 'letters-c', hidden: false },
+      },
     ],
   },
 ]
