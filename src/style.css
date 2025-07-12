@@ -1,0 +1,29 @@
+#app {
+  height: 100vh;
+}
+
+* {
+  font-family: 'alibaba';
+}
+
+@font-face {
+  font-family: 'douyu';
+  src: url(./assets/fonts/douyuZGT.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'alibaba';
+  src: url(./assets/fonts/alibabaPHT.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-alibaba {
+  font-family: 'alibaba';
+}
+
+.font-douyu {
+  font-family: 'douyu';
+}
