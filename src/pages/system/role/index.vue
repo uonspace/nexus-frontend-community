@@ -34,19 +34,25 @@
     <!-- 角色数据 -->
     <t-card class="flex-1" :bordered="false">
       <!-- 操作按钮 -->
-      <t-space>
-        <!-- 新增角色 -->
-        <t-button theme="primary" @click="handleAddRole">
-          <template #icon><t-icon name="add" /> </template>
-          新增角色
-        </t-button>
+      <div class="flex justify-between items-center">
+        <t-space>
+          <!-- 新增角色 -->
+          <t-button theme="primary" @click="handleAddRole">
+            <template #icon><t-icon name="add" /> </template>
+            新增角色
+          </t-button>
 
-        <!-- 批量删除 -->
-        <t-button variant="outline" theme="danger" @click="handleBatchDelete">
-          <template #icon><t-icon name="delete" /> </template>
-          批量删除
+          <!-- 批量删除 -->
+          <t-button variant="outline" theme="danger" @click="handleBatchDelete">
+            <template #icon><t-icon name="delete" /> </template>
+            批量删除
+          </t-button>
+        </t-space>
+        <!-- 刷新角色列表 -->
+        <t-button shape="square" theme="default" @click="fetchData">
+          <template #icon><t-icon name="refresh" /> </template>
         </t-button>
-      </t-space>
+      </div>
 
       <!-- 角色表格 -->
       <t-table
@@ -65,7 +71,7 @@
       >
         <!-- 角色状态 -->
         <template #status="{ row }">
-          <t-switch v-model="row.status">
+          <t-switch v-model="row.status" @change="onChangeStatus(row)">
             <template #label="slotProps">
               <span class="text-[11px] pl-[4px] pr-[2px] py-[1px]">{{ slotProps.value ? '启用' : '禁用' }}</span>
             </template>
@@ -99,7 +105,7 @@
 import { ref, onMounted } from 'vue'
 import RoleForm from './components/RoleForm.vue'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
-import { roleListApi, roleDetailApi, roleDeleteApi } from '@/api/role'
+import { roleListApi, roleUpdateApi, roleDeleteApi } from '@/api/role'
 
 // 搜索表单
 const formData = ref({
@@ -147,7 +153,7 @@ const dataLoading = ref(false)
 // 分页配置
 const pagination = ref({
   defaultCurrent: 1,
-  defaultPageSize: 5,
+  defaultPageSize: 10,
   total: 0,
 })
 
@@ -276,6 +282,46 @@ const handleDeleteRole = (row) => {
 // 关闭角色表单弹窗
 const handleCloseRoleForm = async () => {
   await fetchData() // 刷新数据
+}
+
+// 更新状态
+const onChangeStatus = (row) => {
+  console.log(row)
+
+  let status = row.status
+  let body = ''
+
+  if (status) {
+    body = '确定要更新角色为启用状态吗?'
+  } else {
+    body = '确定要更新角色为禁用状态吗?'
+  }
+
+  // 弹窗确认
+  const confirmDia = DialogPlugin({
+    theme: 'info',
+    header: '更新角色状态',
+    body: body,
+    confirmBtn: '确定',
+    cancelBtn: '取消',
+    onConfirm: async ({ e }) => {
+      // 执行更新角色状态逻辑
+      await roleUpdateApi(row)
+      MessagePlugin.success('角色状态更新成功')
+
+      // 刷新数据
+      await fetchData()
+
+      // 隐藏弹窗
+      console.log('角色状态更新:', row)
+      confirmDia.hide()
+    },
+    onClose: ({ e, trigger }) => {
+      // 取消恢复原状态
+      row.status = !row.status
+      confirmDia.hide()
+    },
+  })
 }
 </script>
 
