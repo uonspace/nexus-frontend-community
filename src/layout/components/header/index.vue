@@ -105,9 +105,9 @@ const toggleFullscreen = () => {
 }
 
 // 获取用户信息
-const getUserInfo = async () => {
+const getUserProfile = async () => {
   try {
-    await authStore.getUserInfo()
+    await authStore.getUserProfile()
   } catch (e) {
     console.error('failed to getUserInfo:', e)
   }
@@ -115,7 +115,7 @@ const getUserInfo = async () => {
 
 // 页面挂载
 onMounted(async () => {
-  await getUserInfo()
+  await getUserProfile()
 })
 
 // 退出登录

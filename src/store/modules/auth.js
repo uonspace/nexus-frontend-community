@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { loginApi, logoutApi, getUserInfoApi } from '@/api/auth'
+import { loginApi, logoutApi, getUserProfileApi } from '@/api/auth'
 import { setToken, removeToken } from '@/utils/token'
 
 // 认证状态管理
@@ -45,10 +45,10 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // 用户信息
-  const getUserInfo = async () => {
+  const getUserProfile = async () => {
     try {
       // 发送请求
-      const response = await getUserInfoApi()
+      const response = await getUserProfileApi()
       // 获取用户信息
       state.userInfo = response.data
     } catch (e) {
@@ -60,6 +60,6 @@ export const useAuthStore = defineStore('auth', () => {
     state,
     login,
     logout,
-    getUserInfo,
+    getUserProfile,
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full gap-4">
+  <div class="h-full flex flex-col gap-4">
     <!-- 搜索表单 -->
     <t-card title="角色管理" :bordered="false">
       <!-- 表单 -->

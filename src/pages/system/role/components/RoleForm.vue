@@ -1,6 +1,14 @@
 <template>
   <!-- 对话框 -->
-  <t-dialog v-model:visible="visible" :header="header" width="25%" :closeOnOverlayClick="false" :closeOnEscKeydown="false" :on-close="onClose" :on-confirm="onConfirm">
+  <t-dialog
+    v-model:visible="visible"
+    :header="header"
+    width="25%"
+    :closeOnOverlayClick="false"
+    :closeOnEscKeydown="false"
+    :on-close="onClose"
+    :on-confirm="onConfirm"
+  >
     <!-- 表单 -->
     <t-form ref="form" :rules="FORM_RULES" :data="formData" :colon="true" @submit="onSubmit">
       <t-form-item label="角色名称" name="name">
@@ -29,7 +37,7 @@
 <script setup>
 import { ref } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { roleDetailApi, roleCreateApi, roleUpdateApi } from '@/api/role'
+import { roleCreateApi, roleUpdateApi } from '@/api/role'
 
 // 回调事件
 const emits = defineEmits(['close'])

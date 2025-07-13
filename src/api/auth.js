@@ -10,4 +10,4 @@ export const loginApi = (data) => service.post('/user/login', data)
 export const logoutApi = () => service.get('/user/logout')
 
 // 用户信息
-export const getUserInfoApi = () => service.get('/user/info')
+export const getUserProfileApi = () => service.get('/user/profile')
