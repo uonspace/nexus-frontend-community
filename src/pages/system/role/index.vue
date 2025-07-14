@@ -81,12 +81,12 @@
         <!-- 操作按钮 -->
         <template #operate="{ row }">
           <t-space size="0">
-            <!-- 编辑角色 -->
-            <t-link theme="primary" @click="handleEditRole(row)">编辑</t-link>
+            <!-- 角色分配权限 -->
+            <t-link theme="primary">分配权限</t-link>
             <t-divider layout="vertical" />
 
-            <!-- 角色分配权限 -->
-            <t-link theme="primary">权限</t-link>
+            <!-- 编辑角色 -->
+            <t-link theme="primary" @click="handleEditRole(row)">编辑</t-link>
             <t-divider layout="vertical" />
 
             <!-- 删除角色 -->
@@ -142,7 +142,7 @@ const columns = ref([
   { colKey: 'status', title: '角色状态', width: '150px' },
   { colKey: 'sort', title: '角色排序', width: '150px' },
   { colKey: 'description', title: '角色描述' },
-  { colKey: 'operate', title: '操作', align: 'center', width: '250px' },
+  { colKey: 'operate', title: '操作', align: 'center', width: '250px', fixed: 'right' },
 ])
 
 // 表格数据
@@ -162,7 +162,7 @@ const onPageChange = async (pageInfo) => {
   console.log('page-change', pageInfo)
   pagination.value.current = pageInfo.current
   pagination.value.pageSize = pageInfo.pageSize
-  await fetchData(pageInfo)
+  await fetchData()
 }
 
 // 获取表格数据
@@ -288,10 +288,9 @@ const handleCloseRoleForm = async () => {
 const onChangeStatus = (row) => {
   console.log(row)
 
-  let status = row.status
   let body = ''
 
-  if (status) {
+  if (row.status === true) {
     body = '确定要更新角色为启用状态吗?'
   } else {
     body = '确定要更新角色为禁用状态吗?'
@@ -309,16 +308,13 @@ const onChangeStatus = (row) => {
       await roleUpdateApi(row)
       MessagePlugin.success('角色状态更新成功')
 
-      // 刷新数据
-      await fetchData()
-
       // 隐藏弹窗
       console.log('角色状态更新:', row)
       confirmDia.hide()
     },
-    onClose: ({ e, trigger }) => {
-      // 取消恢复原状态
-      row.status = !row.status
+    onClose: async ({ e, trigger }) => {
+      // 刷新数据
+      await fetchData()
       confirmDia.hide()
     },
   })
