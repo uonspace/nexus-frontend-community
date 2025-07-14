@@ -1,6 +1,14 @@
 <template>
   <!-- 对话框 -->
-  <t-dialog v-model:visible="visible" header="分配角色" width="28%" :closeOnOverlayClick="false" :closeOnEscKeydown="false" :on-close="onClose" :on-confirm="onConfirm">
+  <t-dialog
+    v-model:visible="visible"
+    header="分配角色"
+    width="32%"
+    :closeOnOverlayClick="false"
+    :closeOnEscKeydown="false"
+    :on-close="onClose"
+    :on-confirm="onConfirm"
+  >
     <!-- 传送框 -->
     <t-transfer
       class="flex justify-center mt-4"
@@ -60,7 +68,7 @@ const fetchData = async () => {
     let response = await roleListAllApi()
 
     // 填充左侧传送框
-    response.data.data.forEach((role) => {
+    response.data.forEach((role) => {
       data.value.push({
         value: role.id,
         label: role.name,

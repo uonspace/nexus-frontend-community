@@ -30,14 +30,30 @@
               <!-- 开始时间 -->
               <t-col :span="4">
                 <t-form-item label="开始时间" name="beginTime">
-                  <t-date-picker v-model="formData.beginTime" enable-time-picker allow-input clearable placeholder="请选择开始时间" format="YYYY-MM-DD hh:mm:ss" class="w-[300px]" />
+                  <t-date-picker
+                    v-model="formData.beginTime"
+                    enable-time-picker
+                    allow-input
+                    clearable
+                    placeholder="请选择开始时间"
+                    format="YYYY-MM-DD hh:mm:ss"
+                    class="w-[300px]"
+                  />
                 </t-form-item>
               </t-col>
 
               <!-- 结束时间 -->
               <t-col :span="4">
                 <t-form-item label="结束时间" name="endTime">
-                  <t-date-picker v-model="formData.endTime" enable-time-picker allow-input clearable placeholder="请选择结束时间" format="YYYY-MM-DD hh:mm:ss" class="w-[300px]" />
+                  <t-date-picker
+                    v-model="formData.endTime"
+                    enable-time-picker
+                    allow-input
+                    clearable
+                    placeholder="请选择结束时间"
+                    format="YYYY-MM-DD hh:mm:ss"
+                    class="w-[300px]"
+                  />
                 </t-form-item>
               </t-col>
             </t-row>
@@ -210,7 +226,7 @@ const tableData = ref([]) // 表格数据定义
 
 const tableTotal = ref(0) // 表格数据总数
 
-const tableColumns = ref([
+const tableColumns = [
   { colKey: 'row-select', type: 'multiple' },
   { colKey: 'avatar', title: '头像', width: 90 },
   { colKey: 'username', title: '账号', width: 150 },
@@ -223,8 +239,8 @@ const tableColumns = ref([
   { colKey: 'lastLoginTime', title: '最后登录时间', width: 200 },
   { colKey: 'createdBy', title: '创建用户', width: 150 },
   { colKey: 'createdTime', title: '创建时间', width: 200 },
-  { colKey: 'operation', title: '操作', width: 300, fixed: 'right' },
-]) // 表格数据列配置
+  { colKey: 'operation', title: '操作', align: 'center', width: 300, fixed: 'right' },
+] // 表格数据列配置
 
 const tableLoading = ref(false) // 表格加载状态
 
@@ -245,8 +261,10 @@ const rehandleSelectChange = (value, ctx) => {
 // 表格分页事件
 const onPageChange = async (pageInfo) => {
   console.log('page-change', pageInfo)
+  // 刷新数据
   pagination.value.current = pageInfo.current
   pagination.value.pageSize = pageInfo.pageSize
+  await fetchData()
 }
 
 // 分页列表条件查询

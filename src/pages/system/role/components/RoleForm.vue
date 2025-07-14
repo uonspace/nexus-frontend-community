@@ -3,7 +3,7 @@
   <t-dialog
     v-model:visible="visible"
     :header="header"
-    width="25%"
+    width="32%"
     :closeOnOverlayClick="false"
     :closeOnEscKeydown="false"
     :on-close="onClose"
@@ -57,14 +57,14 @@ const FORM_RULES = {
   name: [
     { required: true, message: '角色名称必填' },
     { whitespace: true, message: '角色名称不能为空' },
-    { min: 3, message: '输入字数应在3到12之间' },
-    { max: 12, message: '输入字数应在3到12之间' },
+    { min: 4, message: '输入字数应在4到20之间' },
+    { max: 20, message: '输入字数应在4到20之间' },
   ],
   code: [
     { required: true, message: '角色编码必填' },
     { whitespace: true, message: '角色编码不能为空' },
-    { min: 3, message: '输入字数应在3到12之间' },
-    { max: 12, message: '输入字数应在3到12之间' },
+    { min: 4, message: '输入字数应在4到20之间' },
+    { max: 20, message: '输入字数应在4到20之间' },
   ],
 }
 

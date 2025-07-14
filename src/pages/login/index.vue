@@ -58,7 +58,7 @@
         <t-form ref="form" :data="formData" :rules="rules" :labelWidth="0" @submit="onSubmit">
           <!-- 账号输入框 -->
           <t-form-item name="username">
-            <t-input v-model="formData.username" size="large" clearable placeholder="用户名">
+            <t-input v-model="formData.username" size="large" clearable placeholder="用户名/手机号/邮箱">
               <template #prefix-icon>
                 <user-icon size="20px" style="color: #003cab" />
               </template>

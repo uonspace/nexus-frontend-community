@@ -1,6 +1,14 @@
 <template>
   <!-- 对话框 -->
-  <t-dialog v-model:visible="visible" header="重置密码" width="25%" :closeOnOverlayClick="false" :closeOnEscKeydown="false" :on-close="onClose" :on-confirm="onConfirm">
+  <t-dialog
+    v-model:visible="visible"
+    header="重置密码"
+    width="32%"
+    :closeOnOverlayClick="false"
+    :closeOnEscKeydown="false"
+    :on-close="onClose"
+    :on-confirm="onConfirm"
+  >
     <!-- 表单 -->
     <t-form ref="form" :rules="FORM_RULES" :data="formData" :colon="true" @submit="onSubmit">
       <t-form-item label="用户密码" name="password">

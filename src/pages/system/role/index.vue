@@ -160,6 +160,7 @@ const pagination = ref({
 // 分页事件
 const onPageChange = async (pageInfo) => {
   console.log('page-change', pageInfo)
+  // 刷新数据
   pagination.value.current = pageInfo.current
   pagination.value.pageSize = pageInfo.pageSize
   await fetchData()
