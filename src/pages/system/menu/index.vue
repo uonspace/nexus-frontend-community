@@ -54,20 +54,20 @@
       <div class="flex justify-between items-center">
         <t-space>
           <!-- 新增菜单 -->
-          <t-button theme="primary">
+          <t-button theme="primary" @click="handleCreateMenu">
             <template #icon><t-icon name="add" /> </template>
             新增菜单
           </t-button>
 
           <!-- 折叠展开 -->
-          <t-button theme="default">
-            <template #icon><t-icon name="unfold-more" /> </template>
-            全部展开
+          <t-button theme="default" @click="handleExpandAllToggle">
+            <template #icon><t-icon :name="expandAll ? 'unfold-less' : 'unfold-more'" /> </template>
+            {{ expandAll ? '收起全部' : '展开全部' }}
           </t-button>
         </t-space>
 
         <!-- 刷新菜单列表 -->
-        <t-button shape="square" theme="default">
+        <t-button shape="square" theme="default" @click="fetchData">
           <template #icon><t-icon name="refresh" /> </template>
         </t-button>
       </div>
@@ -109,15 +109,22 @@
       </t-enhanced-table>
     </t-card>
   </div>
+
+  <!-- 菜单弹窗 -->
+  <UpsertMenuDialog ref="upsertMenuDialogRef" @close="handleCloseUpsertMenuDialog" />
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 import { menuListApi } from '@/api/menu'
+import { buildTree } from '@/utils/tree'
+import UpsertMenuDialog from './components/UpsertMenuDialog.vue'
 
 const tableRef = ref(null) // 树形表格引用
 
 const tableData = ref([]) // 树形表格数据
+
+const expandAll = ref(false) // 树形表格展开
 
 const tableColumns = [
   { colKey: 'name', title: '名称', width: 150 },
@@ -136,7 +143,7 @@ const tableConfig = ref({
   childrenKey: 'children',
   treeNodeColumnIndex: 0,
   indent: 25,
-  expandTreeNodeOnClick: true,
+  expandTreeNodeOnClick: false,
 }) // 树形表格配置
 
 // 查询菜单列表
@@ -151,6 +158,12 @@ const fetchData = async () => {
   } catch (error) {
     console.log('查询菜单列表:', error)
   }
+}
+
+// 树形表格全部展开折叠
+const handleExpandAllToggle = () => {
+  expandAll.value = !expandAll.value
+  expandAll.value ? tableRef.value.expandAll() : tableRef.value.foldAll()
 }
 
 // 页面挂载事件
@@ -168,6 +181,8 @@ const formData = ref({
 // 搜索表单提交
 const onSubmit = async () => {
   console.log(formData.value)
+  // 刷新数据
+  await fetchData()
 }
 
 // 搜索表单提交事件
@@ -178,47 +193,19 @@ const submitForm = async () => {
 // 搜索表单重置事件
 const resetForm = async () => {
   form.value.reset()
+  // 刷新数据
+  await fetchData()
 }
 
-// 生成树
-const buildTree = (list) => {
-  // 根据id构建映射
-  const map = list.reduce((memo, current) => {
-    memo[current.id] = { ...current }
-    return memo
-  }, {})
+const upsertMenuDialogRef = ref(null) // 菜单弹窗引用
 
-  // 顶层目录
-  const tree = []
-
-  // 遍历每一项
-  list.forEach((item) => {
-    // 获取父项
-    const pid = item.parentId
-
-    // 找到映射的元素
-    const current = map[item.id]
-
-    // 判断父项是否存在
-    if (pid !== 0 || pid !== null) {
-      const parent = map[pid]
-      if (parent) {
-        const children = parent?.children || []
-        children.push(current)
-        parent.children = children
-        return
-      }
-    }
-
-    // 放置顶层
-    tree.push(current)
-  })
-
-  // 打印
-  console.log(tree)
-
-  return tree
+// 新增菜单事件
+const handleCreateMenu = () => {
+  upsertMenuDialogRef.value.openDialog()
 }
+
+// 关闭菜单弹窗事件
+const handleCloseUpsertMenuDialog = () => {}
 </script>
 
 <style lang="scss" scoped></style>
