@@ -54,7 +54,7 @@
       <div class="flex justify-between items-center">
         <t-space>
           <!-- 新增菜单 -->
-          <t-button theme="primary" @click="handleCreateMenu">
+          <t-button theme="primary" @click="handleMenuUpsert(null)">
             <template #icon><t-icon name="add" /> </template>
             新增菜单
           </t-button>
@@ -95,15 +95,15 @@
         <template #operation="{ row }">
           <t-space size="0">
             <!-- 新增菜单 -->
-            <t-link theme="primary">新增</t-link>
+            <t-link theme="primary" @click="handleMenuUpsert(row.id)">新增</t-link>
             <t-divider layout="vertical" />
 
             <!-- 编辑菜单 -->
-            <t-link theme="primary">编辑</t-link>
+            <t-link theme="primary" @click="handleMenuUpsert(row)">编辑</t-link>
             <t-divider layout="vertical" />
 
             <!-- 删除菜单 -->
-            <t-link theme="primary">删除</t-link>
+            <t-link theme="primary" @click="handleMenuDelete(row)">删除</t-link>
           </t-space>
         </template>
       </t-enhanced-table>
@@ -116,7 +116,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { menuListApi } from '@/api/menu'
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
+import { menuListApi, menuDeleteApi } from '@/api/menu'
 import { buildTree } from '@/utils/tree'
 import UpsertMenuDialog from './components/UpsertMenuDialog.vue'
 
@@ -127,11 +128,11 @@ const tableData = ref([]) // 树形表格数据
 const expandAll = ref(false) // 树形表格展开
 
 const tableColumns = [
-  { colKey: 'name', title: '名称', width: 150 },
+  { colKey: 'name', title: '名称', width: 220 },
   { colKey: 'type', title: '类型', width: 80 },
   { colKey: 'icon', title: '图标', width: 80 },
-  { colKey: 'component', title: '组件路径', width: 220 },
-  { colKey: 'permission', title: '权限标识', width: 220 },
+  { colKey: 'component', title: '组件路径', width: 280 },
+  { colKey: 'permission', title: '权限标识', width: 250 },
   { colKey: 'path', title: '路由地址', width: 220 },
   { colKey: 'status', title: '状态', width: 80 },
   { colKey: 'sort', title: '排序', width: 70 },
@@ -199,13 +200,42 @@ const resetForm = async () => {
 
 const upsertMenuDialogRef = ref(null) // 菜单弹窗引用
 
-// 新增菜单事件
-const handleCreateMenu = () => {
-  upsertMenuDialogRef.value.openDialog()
+// 新增或更新菜单
+const handleMenuUpsert = async (row) => {
+  upsertMenuDialogRef.value.openDialog(row)
+}
+
+// 删除菜单
+const handleMenuDelete = async (row) => {
+  // 弹窗确认
+  const confirmDia = DialogPlugin({
+    theme: 'info',
+    header: '删除菜单',
+    body: '确定要删除选中的菜单吗?',
+    confirmBtn: '确定',
+    cancelBtn: '取消',
+    onConfirm: async ({ e }) => {
+      // 执行删除逻辑
+      await menuDeleteApi(row.id)
+      MessagePlugin.success('菜单删除成功')
+
+      // 刷新数据
+      await fetchData()
+
+      // 隐藏弹窗
+      console.log('删除菜单:', row)
+      confirmDia.hide()
+    },
+    onClose: ({ e, trigger }) => {
+      confirmDia.hide()
+    },
+  })
 }
 
 // 关闭菜单弹窗事件
-const handleCloseUpsertMenuDialog = () => {}
+const handleCloseUpsertMenuDialog = async () => {
+  await fetchData()
+}
 </script>
 
 <style lang="scss" scoped></style>

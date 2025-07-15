@@ -1,10 +1,26 @@
 <template>
   <!-- 对话框 -->
-  <t-dialog v-model:visible="visible" header="添加菜单" width="32%" top="70px" :closeOnOverlayClick="false" :closeOnEscKeydown="false" :on-close="onClose" :on-confirm="onConfirm">
+  <t-dialog
+    v-model:visible="visible"
+    header="添加菜单"
+    width="32%"
+    top="70px"
+    :closeOnOverlayClick="false"
+    :closeOnEscKeydown="false"
+    :on-close="onClose"
+    :on-confirm="onConfirm"
+  >
     <!-- 表单 -->
     <t-form ref="form" :rules="FORM_RULES" :data="formData" :colon="true" @submit="onSubmit">
       <t-form-item label="上级菜单" name="parentId">
-        <t-tree-select v-model="formData.parentId" :data="menus" :keys="{ value: 'id', label: 'name', children: 'children' }" placeholder="请选择父节点" clearable filterable />
+        <t-tree-select
+          v-model="formData.parentId"
+          :data="menus"
+          :keys="{ value: 'id', label: 'name', children: 'children' }"
+          placeholder="请选择父节点"
+          clearable
+          filterable
+        />
       </t-form-item>
 
       <t-form-item label="菜单类型" name="type">
@@ -42,7 +58,9 @@
               <t-icon :name="item.stem" size="18px" />
             </div>
           </t-option>
-          <template #valueDisplay v-if="formData.icon"><t-icon :name="formData.icon" :style="{ marginRight: '8px' }" />{{ formData.icon }}</template>
+          <template #valueDisplay v-if="formData.icon"
+            ><t-icon :name="formData.icon" :style="{ marginRight: '8px' }" />{{ formData.icon }}</template
+          >
         </t-select>
       </t-form-item>
 
@@ -72,7 +90,7 @@ import { ref } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { manifest } from 'tdesign-icons-vue-next'
 
-import { menuListApi } from '@/api/menu'
+import { menuListApi, menuUpsertApi } from '@/api/menu'
 import { buildTree } from '@/utils/tree'
 
 const options = ref(manifest) // 获取全部图标的列表
@@ -80,6 +98,7 @@ const options = ref(manifest) // 获取全部图标的列表
 const emits = defineEmits(['close']) // 回调事件
 
 const INITIAL_DATA = {
+  id: null,
   parentId: '',
   type: 0,
   name: '',
@@ -110,9 +129,17 @@ const formData = ref({ ...INITIAL_DATA }) // 表单数据
 const onSubmit = async ({ validateResult, firstError }) => {
   if (validateResult === true) {
     try {
-      // 新增用户
-      await userCreateApi(formData.value)
-      MessagePlugin.success('用户创建成功')
+      console.log(formData.value)
+
+      // 新增或修改菜单
+      await menuUpsertApi(formData.value)
+
+      // 判断新增还是修改
+      if (formData.value.id === null) {
+        MessagePlugin.success('菜单创建成功')
+      } else {
+        MessagePlugin.success('菜单更新成功')
+      }
 
       // 关闭弹窗
       emits('close')
@@ -140,12 +167,25 @@ const onClose = async (ctx) => {
 }
 
 // 打开弹窗
-const openDialog = async () => {
+const openDialog = async (data) => {
   visible.value = true
+
   // 重置表单
   form.value.reset({ type: 'initial' })
-  // 加载数据
-  await fetchData()
+
+  // 初始化菜单列表
+  await fetchMenuList()
+  // 判断新增还是更新
+  if (data) {
+    // 如果传递名称则为更新
+    if (data.name) {
+      Object.assign(formData.value, data)
+    } else {
+      // 新增菜单(传递的只有id)
+      // 设置父分类
+      formData.value.parentId = data
+    }
+  }
 }
 
 // 树选择框
@@ -157,11 +197,11 @@ const menus = ref([
   },
 ])
 
-// 查询菜单列表
-const fetchData = async () => {
+// 初始化菜单列表
+const fetchMenuList = async () => {
   try {
     // 调用接口
-    const response = await menuListApi(formData.value)
+    const response = await menuListApi({ name: '' })
     // 构建菜单树
     const tree = buildTree(response.data)
     // 填充数据
