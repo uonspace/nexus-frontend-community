@@ -82,7 +82,7 @@
         <template #operate="{ row }">
           <t-space size="0">
             <!-- 角色分配权限 -->
-            <t-link theme="primary">分配权限</t-link>
+            <t-link theme="primary" @click="handleAssignMenu(row)">分配权限</t-link>
             <t-divider layout="vertical" />
 
             <!-- 编辑角色 -->
@@ -97,6 +97,9 @@
     </t-card>
   </div>
 
+  <!-- 分配权限组件 -->
+  <AssignMenuDialog ref="assignMenuDialog" />
+
   <!-- 角色表单组件 -->
   <RoleForm ref="roleFormRef" @close="handleCloseRoleForm" />
 </template>
@@ -104,8 +107,16 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import RoleForm from './components/RoleForm.vue'
+import AssignMenuDialog from './components/AssignMenuDialog.vue'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 import { roleListApi, roleUpdateApi, roleDeleteApi } from '@/api/role'
+
+// 分配权限
+const assignMenuDialog = ref(null)
+
+const handleAssignMenu = (row) => {
+  assignMenuDialog.value.openDialog(row.id)
+}
 
 // 搜索表单
 const formData = ref({
